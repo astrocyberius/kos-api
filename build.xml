@@ -5,7 +5,7 @@
     <property name="classes.dir" value="${build.dir}/classes"/>
     <property name="jar.dir"     value="${build.dir}/jar"/>
     <property name="jar.lib.dir" value="${jar.dir}/lib"/>
-    <property name="main-class"  value="com.allianz.kos.filenet.Main"/>
+    <property name="main-class"  value="nl.allianz.kos.filenet.Main"/>
     <property name="jar.name"    value="filenet-sample"/>
 
     <path id="classpath">
@@ -28,7 +28,7 @@
 
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
-        <copy file="${src.dir}/log4j.properties" tofile="${classes.dir}/log4j.properties" overwrite="true" />
+        <copy file="src/log4j.xml" tofile="${classes.dir}/log4j.xml" overwrite="true" />
         <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
     </target>
 

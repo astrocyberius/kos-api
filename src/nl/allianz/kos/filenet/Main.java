@@ -1,5 +1,6 @@
-package com.allianz.kos.filenet;
+package nl.allianz.kos.filenet;
 
+import com.allianz.kos.filenet.FileNetApi;
 import org.apache.log4j.Logger;
 
 public class Main {
