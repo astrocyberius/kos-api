@@ -1,0 +1,68 @@
+<project name="FileNet Sample" basedir="." default="main">
+    <property name="src.dir"     value="src"/>
+    <property name="lib.dir"     value="lib"/>
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+    <property name="jar.lib.dir" value="${jar.dir}/lib"/>
+    <property name="main-class"  value="com.allianz.kos.filenet.Main"/>
+    <property name="jar.name"    value="filenet-sample"/>
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <pathconvert property="manifest.classpath" pathsep=" ">
+        <path refid="classpath"/>
+        <mapper>
+            <chainedmapper>
+                <flattenmapper/>
+                <globmapper from="*.jar" to="lib/*.jar"/>
+            </chainedmapper>
+        </mapper>
+    </pathconvert>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <copy file="${src.dir}/log4j.properties" tofile="${classes.dir}/log4j.properties" overwrite="true" />
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}"/>
+        <mkdir dir="${jar.lib.dir}"/>
+        <copy todir="${jar.lib.dir}" flatten="true">
+            <fileset dir="${lib.dir}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </copy>
+        <jar destfile="${jar.dir}/${jar.name}.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+                <attribute name="Class-Path" value="${manifest.classpath}"/>
+            </manifest>
+        </jar>
+        <tstamp>
+            <format property="timestamp" pattern="yyyy-MM-dd_HH-mm-ss" />
+        </tstamp>
+        <zip destfile="${build.dir}/${jar.name}_${timestamp}.zip" basedir="${build.dir}/jar"/>
+    </target>
+
+    <target name="run" depends="jar">
+        <java fork="true" classname="${main-class}">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${jar.dir}/${jar.name}.jar"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="clean-build" depends="clean,jar"/>
+
+    <target name="main" depends="clean,run"/>
+
+</project>
